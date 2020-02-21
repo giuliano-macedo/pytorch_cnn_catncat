@@ -26,6 +26,8 @@ eval_imgs,eval_labels=get_dataset(args.dataset,"evaluation")
 # exit()
 
 model=args.model
+
+no_train=float(train_labels.size(0))
 no_eval=float(eval_labels.size(0))
 
 if args.gpu:
@@ -34,13 +36,21 @@ criterion = nn.CrossEntropyLoss()
 optimizer = torch.optim.SGD(model.parameters(), lr=args.lr)
 for epoch in range(args.no_epochs):
 	optimizer.zero_grad()
+	
+	model.train()
 	outputs = model(train_imgs)
-	loss = criterion(outputs, train_labels)
-	loss.backward()
+	loss_train = criterion(outputs, train_labels)
+	_, predicted = torch.max(outputs.data, 1)
+	accr_train=((predicted == train_labels).sum())/no_train
+
+	loss_train.backward()
 	optimizer.step()
 
+	model.eval()
+	optimizer.zero_grad()
 	outputs = model(eval_imgs)
+	loss_eval = criterion(outputs, eval_labels)
 	_, predicted = torch.max(outputs.data, 1)
-	accr=((predicted == eval_labels).sum())/no_eval
+	accr_eval=((predicted == eval_labels).sum())/no_eval
 
-	print(f"{epoch} loss:{loss} accr:{accr*100:.2f}%")
+	print(f"{epoch} train loss:{loss_train} accr:{accr_train*100:.2f}% eval loss:{loss_eval} accr:{accr_eval*100:.2f}% ")

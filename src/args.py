@@ -30,7 +30,7 @@ def get_args():
 		"--no-epochs",
 		type=int,
 		help="number of epochs (default: 1000)",
-		default=100,
+		default=1000,
 		dest="no_epochs"
 	)
 
