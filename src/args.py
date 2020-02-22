@@ -9,7 +9,7 @@ def get_args():
 		nargs="?"
 	)
 	parser.add_argument("-lr",
-		type=int,
+		type=float,
 		default=1e-3,
 		help="learning rate (default: 1e-3)"
 	)

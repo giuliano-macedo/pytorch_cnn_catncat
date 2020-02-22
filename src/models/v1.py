@@ -17,7 +17,8 @@ class V1(nn.Module):
         self.maxpool1 = nn.MaxPool2d(kernel_size=2)
      
         # Convolution 2
-        self.cnn2 = nn.Conv2d(in_channels=16,
+        self.cnn2 = nn.Conv2d(
+            in_channels=16,
             out_channels=32,
             kernel_size=5,
             stride=1,

@@ -31,7 +31,7 @@ def download_and_extract_zip(url,path):
 	f=io.BytesIO(download_file(url))
 	my_zip=zipfile.ZipFile(f)
 	my_zip.extractall(path)
-def get_dataset(root,dataset_type,shuffle=False):
+def get_dataset(root,dataset_type,gpu,shuffle=False):
 	imgs=[]
 	labels=[]
 
@@ -43,5 +43,7 @@ def get_dataset(root,dataset_type,shuffle=False):
 			imgs.append(img)
 			labels.append(y)
 
-	return Variable(torch.tensor(imgs)),Variable(torch.tensor(labels))
-	
+	imgs,labels=torch.tensor(imgs),torch.tensor(labels)
+	if gpu:
+		return Variable(imgs.cuda()),Variable(labels.cuda())
+	return Variable(imgs),Variable(labels)
