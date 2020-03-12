@@ -1,7 +1,7 @@
 # CNN on Cat/non cat dataset using pytorch
 
 ## Results:
-| Model |Max Precision eval dataset |
+| Model |Max Precision In Validation Dataset |
 -|-
 V1 |~50% |
 V2 | ~50% 
