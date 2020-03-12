@@ -31,7 +31,7 @@ def download_and_extract_zip(url,path):
 	f=io.BytesIO(download_file(url))
 	my_zip=zipfile.ZipFile(f)
 	my_zip.extractall(path)
-def get_dataset(root,dataset_type,gpu,shuffle=False):
+def get_dataset(root,dataset_type,gpu,preproc,shuffle=False):
 	imgs=[]
 	labels=[]
 
@@ -39,11 +39,12 @@ def get_dataset(root,dataset_type,gpu,shuffle=False):
 		files=glob((os.path.join(root,dataset_type,y_label,"*.png")))
 		if shuffle:random.shuffle(files)
 		for fname in files:
-			img=np.expand_dims(np.array(Image.open(fname),dtype=np.float32).mean(axis=2)/255.0,axis=0)
+			img=preproc(Image.open(fname))
 			imgs.append(img)
 			labels.append(y)
 
-	imgs,labels=torch.tensor(imgs),torch.tensor(labels)
+	labels=torch.tensor(labels)
+	imgs=torch.stack(imgs)
 	if gpu:
 		return Variable(imgs.cuda()),Variable(labels.cuda())
 	return Variable(imgs),Variable(labels)

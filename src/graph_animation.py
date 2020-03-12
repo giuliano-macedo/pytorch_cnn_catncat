@@ -12,8 +12,8 @@ class Activity(Process):
 		self.train_x, self.train_y = [], []
 		self.eval_x, self.eval_y = [], []
 		self.fig, self.ax = plt.subplots()
-		self.ln_train, = plt.plot([], [], label="treino")
-		self.ln_eval,  = plt.plot([], [],  label="avaliacao")
+		self.ln_train, = plt.plot([], [], label="train")
+		self.ln_eval,  = plt.plot([], [],  label="evaluation")
 		FuncAnimation(self.fig, self.__anim_update,interval=16, init_func=self.__anim_init, blit=True)
 		plt.title(self.title)
 		plt.show()

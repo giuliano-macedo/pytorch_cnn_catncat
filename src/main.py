@@ -5,6 +5,8 @@ from utils import download_and_extract_zip,get_dataset
 import torch
 import torch.nn as nn
 from graph_animation import Animation
+import torchvision.models as models
+from torchvision import transforms
 
 torch.random.manual_seed(1)
 # from torch.utils.tensorboard import SummaryWriter
@@ -24,14 +26,24 @@ if args.dataset==None:
 		print("downloading dataset...")
 		download_and_extract_zip(url,args.dataset)
 
-train_imgs,train_labels=get_dataset(args.dataset,"train",args.gpu,shuffle=True)
-eval_imgs,eval_labels=get_dataset(args.dataset,"evaluation",args.gpu)
+model=models.alexnet(pretrained=True)
+if args.feature_extraction:
+	for param in model.parameters():
+		param.requires_grad = False
+num_ftrs = model.classifier[6].in_features
+model.classifier[6] = nn.Linear(num_ftrs,2)
 
-# print(train_imgs[0])
-# print(train_imgs.size())
-# exit()
+preproc=transforms.Compose([
+    transforms.Resize(256),
+    transforms.CenterCrop(224),
+    transforms.ToTensor(),
+    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+])
 
-model=args.model
+train_imgs,train_labels=get_dataset(args.dataset,"train",args.gpu,preproc,shuffle=True)
+eval_imgs,eval_labels=get_dataset(args.dataset,"evaluation",args.gpu,preproc)
+
+
 if args.gpu:
 	model.cuda()
 
